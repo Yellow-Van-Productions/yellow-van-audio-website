@@ -1,5 +1,5 @@
 @echo off
-REM Portfolio Deployment Script for GitHub Pages (Windows)
+REM Yellow Van Audio Deployment Script for GitHub Pages (Windows)
 
 echo Starting deployment process...
 

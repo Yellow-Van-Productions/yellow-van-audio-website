@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Portfolio Deployment Script for GitHub Pages
+# Yellow Van Audio Deployment Script for GitHub Pages
 
 echo "🚀 Starting deployment process..."
 
