@@ -39,7 +39,7 @@
 
 .service-image-container {
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 3/2;
   border-radius: 0;
   overflow: hidden;
   margin-bottom: var(--spacing-md);
