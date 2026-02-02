@@ -15,10 +15,29 @@ interface ServicesProps {
 const Services: React.FC<ServicesProps> = ({ services }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [itemsPerView, setItemsPerView] = useState(3);
   const timeoutRef = useRef<number | null>(null);
 
   // Create extended array for infinite loop effect
   const extendedServices = [...services, ...services, ...services];
+
+  // Update items per view based on window size
+  useEffect(() => {
+    const updateItemsPerView = () => {
+      const width = window.innerWidth;
+      if (width <= 600) {
+        setItemsPerView(1);
+      } else if (width <= 900) {
+        setItemsPerView(2);
+      } else {
+        setItemsPerView(3);
+      }
+    };
+
+    updateItemsPerView();
+    window.addEventListener('resize', updateItemsPerView);
+    return () => window.removeEventListener('resize', updateItemsPerView);
+  }, []);
 
   const nextSlide = () => {
     if (isTransitioning) return;
@@ -48,6 +67,8 @@ const Services: React.FC<ServicesProps> = ({ services }) => {
     // Reset to middle section when reaching the end
     if (currentIndex >= services.length * 2) {
       setCurrentIndex(services.length);
+    } else if (currentIndex < services.length) {
+      setCurrentIndex(services.length + currentIndex);
     }
   };
 
@@ -59,7 +80,7 @@ const Services: React.FC<ServicesProps> = ({ services }) => {
           <div
             className="carousel-track"
             style={{
-              transform: `translateX(-${currentIndex * (100 / 5)}%)`,
+              transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
               transition: isTransitioning ? 'transform 0.5s ease-in-out' : 'none',
             }}
             onTransitionEnd={handleTransitionEnd}
