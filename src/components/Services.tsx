@@ -15,7 +15,7 @@ interface ServicesProps {
 const Services: React.FC<ServicesProps> = ({ services }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   // Create extended array for infinite loop effect
   const extendedServices = [...services, ...services, ...services];
