@@ -11,31 +11,31 @@ const App: React.FC = () => {
   const services: ServiceItem[] = [
     {
       id: 1,
-      imageSrc: 'public/images/VRAudio.png',
+      imageSrc: '/images/VRAudio.png',
       title: 'Game and VR Audio Development',
       description: 'End-to-end audio systems for games and immersive VR, from engine integration to shipped titles. Deep experience with Wwise, custom Wwise plug-ins, and bespoke pipelines for performance-critical environments. Battle-tested on AAA productions and cutting-edge XR hardware.',
     },
     {
       id: 2,
-      imageSrc: 'public/images/AudioAppsAbstract.png',
+      imageSrc: '/images/AudioAppsAbstract.png',
       title: 'JUCE App Development',
       description: 'Design and development of polished JUCE applications and audio plug-ins. From DSP architecture to UI, cross-platform builds, testing, and deployment. Production-ready codebases built for longevity and maintainability.',
     },
     {
       id: 3,
-      imageSrc: 'public/images/AbstractWaves2.png',
+      imageSrc: '/images/AbstractWaves2.png',
       title: 'Microphone and Speaker Enhancement',
       description: 'Advanced signal processing to improve capture and playback quality on real hardware. Noise reduction, spatial processing, loudness, clarity, and device-level optimisation. Proven experience across consumer, professional, and embedded audio systems.',
     },
     {
       id: 4,
-      imageSrc: 'public/images/AbstractWaves1.png',
+      imageSrc: '/images/AbstractWaves1.png',
       title: 'Custom Cross-Platform DSP',
       description: 'High-performance DSP tailored to your product, platform, and constraints. Implemented in C++, C#, or Python, targeting desktop, mobile, embedded, or cloud. Clean, portable designs with a focus on real-time reliability and scalability.',
     },
     {
       id: 5,
-      imageSrc: 'public/images/JellyfishScreenshot.png',
+      imageSrc: '/images/JellyfishScreenshot.png',
       title: 'Audio SaaS Products in the Cloud',
       description: 'Scalable audio-driven SaaS platforms built end-to-end in the cloud. AWS-based back-ends with modern front-ends in React or Angular. From real-time processing pipelines to robust APIs, deployment, and monitoring.',
     },
@@ -46,7 +46,7 @@ const App: React.FC = () => {
       <Header title="Yellow Van Audio" />
       
       <Hero
-      imageSrc="public/images/MixingConsole.png"
+      imageSrc="/images/MixingConsole.png"
         title="Bespoke Audio Software Development"
         subtitle="High-performance audio systems for games, XR, hardware, and cloud platforms — from DSP to full-stack delivery."
       />
@@ -54,8 +54,8 @@ const App: React.FC = () => {
       <Services services={services} />
       
       <About
-        profileImageSrc="public/images/ProfileImage.png"
-        logoImageSrc="public/images/YellowVanLogo.webp"
+        profileImageSrc="/images/ProfileImage.png"
+        logoImageSrc="/images/YellowVanLogo.webp"
         linkedInUrl="https://www.linkedin.com/in/jelle-van-mourik-phd-b7069868/"
         bioText={`I am an audio software developer with a PhD in computational acoustics, specialising in real-time sound and music systems across games, XR, hardware, and cloud platforms. My work sits at the intersection of DSP, systems programming, and full-stack development, with a strong focus on reliability and performance. 
           
