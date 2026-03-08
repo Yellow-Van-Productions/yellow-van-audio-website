@@ -17,28 +17,34 @@ const App: React.FC = () => {
     },
     {
       id: 2,
-      imageSrc: '/images/AudioAppsAbstract.png',
+      imageSrc: '/images/MixingConsole.png',
       title: 'JUCE App Development',
       description: 'Design and development of polished JUCE applications and audio plug-ins. From DSP architecture to UI, cross-platform builds, testing, and deployment. Production-ready codebases built for longevity and maintainability.',
     },
     {
       id: 3,
+      imageSrc: '/images/AudioPlayApp.png',
+      title: 'Infotainment and Companion Apps',
+      description: 'Development for companion apps and infotainment systems for consumer and professional audio products, for Android, iOS, and embedded platforms. Experience with Flutter, Qt, Xamarin, JUCE, and native development.',
+    },
+    {
+      id: 4,
       imageSrc: '/images/AbstractWaves2.png',
       title: 'Microphone and Speaker Enhancement',
       description: 'Advanced signal processing to improve capture and playback quality on real hardware. Noise reduction, spatial processing, loudness, clarity, and device-level optimisation. Proven experience across consumer, professional, and embedded audio systems.',
     },
     {
-      id: 4,
-      imageSrc: '/images/AbstractWaves1.png',
+      id: 5,
+      imageSrc: '/images/AbstractDSP.png',
       title: 'Custom Cross-Platform DSP',
       description: 'High-performance DSP tailored to your product, platform, and constraints. Implemented in C++, C#, or Python, targeting desktop, mobile, embedded, or cloud. Clean, portable designs with a focus on real-time reliability and scalability.',
     },
     {
-      id: 5,
+      id: 6,
       imageSrc: '/images/JellyfishScreenshot.png',
       title: 'Audio SaaS Products in the Cloud',
       description: 'Scalable audio-driven SaaS platforms built end-to-end in the cloud. AWS-based back-ends with modern front-ends in React or Angular. From real-time processing pipelines to robust APIs, deployment, and monitoring.',
-    },
+    }
   ];
 
   return (
@@ -46,7 +52,7 @@ const App: React.FC = () => {
       <Header title="Yellow Van Audio" />
       
       <Hero
-      imageSrc="/images/MixingConsole.png"
+      imageSrc="/images/AbstractDSP.png"
         title="Bespoke Audio Software Development"
         subtitle="High-performance audio systems for games, XR, hardware, and cloud platforms — from DSP to full-stack delivery."
       />
