@@ -13,6 +13,7 @@ import {
   type NodeProps,
   type NodeTypes,
 } from '@xyflow/react';
+import DeleteIcon from '@mui/icons-material/Delete';
 import type {
   AddableAudioGraphNodeKind,
   AudioGraphEdge,
@@ -74,7 +75,16 @@ const AUDIO_NODE_DRAG_TYPE = 'application/x-audio-node-type';
 
 type TouchDragState = {
   nodeType: AddableAudioGraphNodeKind;
+  nodeLabel: string;
+  nodeColor: string;
   touchId: number;
+  clientX: number;
+  clientY: number;
+};
+
+type TouchDragPreview = {
+  nodeLabel: string;
+  nodeColor: string;
   clientX: number;
   clientY: number;
 };
@@ -249,8 +259,16 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
   const reactFlowInstanceRef = React.useRef<ReactFlowInstance<AudioGraphNode, AudioGraphEdge> | null>(
     null,
   );
+  const [selectedNodeIds, setSelectedNodeIds] = React.useState<string[]>([]);
+  const [selectedEdgeIds, setSelectedEdgeIds] = React.useState<string[]>([]);
   const graphCanvasRef = React.useRef<HTMLDivElement | null>(null);
   const touchDragStateRef = React.useRef<TouchDragState | null>(null);
+  const [touchDragPreview, setTouchDragPreview] = React.useState<TouchDragPreview | null>(null);
+
+  const clearTouchDrag = () => {
+    touchDragStateRef.current = null;
+    setTouchDragPreview(null);
+  };
 
   const handlePaletteDragStart = (
     event: React.DragEvent<HTMLButtonElement>,
@@ -312,6 +330,8 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
   const handlePaletteTouchStart = (
     event: React.TouchEvent<HTMLButtonElement>,
     nodeType: AddableAudioGraphNodeKind,
+    nodeLabel: string,
+    nodeColor: string,
   ) => {
     const touch = event.changedTouches[0];
     if (!touch) {
@@ -321,10 +341,18 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
     event.preventDefault();
     touchDragStateRef.current = {
       nodeType,
+      nodeLabel,
+      nodeColor,
       touchId: touch.identifier,
       clientX: touch.clientX,
       clientY: touch.clientY,
     };
+    setTouchDragPreview({
+      nodeLabel,
+      nodeColor,
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+    });
   };
 
   const handlePaletteTouchMove = (event: React.TouchEvent<HTMLButtonElement>) => {
@@ -344,6 +372,12 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
       clientX: activeTouch.clientX,
       clientY: activeTouch.clientY,
     };
+    setTouchDragPreview({
+      nodeLabel: state.nodeLabel,
+      nodeColor: state.nodeColor,
+      clientX: activeTouch.clientX,
+      clientY: activeTouch.clientY,
+    });
   };
 
   const handlePaletteTouchEnd = (event: React.TouchEvent<HTMLButtonElement>) => {
@@ -363,11 +397,22 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
       addTouchNodeIfDroppedOnGraph(state.nodeType, state.clientX, state.clientY);
     }
 
-    touchDragStateRef.current = null;
+    clearTouchDrag();
   };
 
   const handlePaletteTouchCancel = () => {
-    touchDragStateRef.current = null;
+    clearTouchDrag();
+  };
+
+  const handleDeleteSelection = () => {
+    if (!reactFlowInstanceRef.current || (selectedNodeIds.length === 0 && selectedEdgeIds.length === 0)) {
+      return;
+    }
+
+    void reactFlowInstanceRef.current.deleteElements({
+      nodes: selectedNodeIds.map((id) => ({ id })),
+      edges: selectedEdgeIds.map((id) => ({ id })),
+    });
   };
 
   const nodesWithHandlers = React.useMemo(
@@ -410,7 +455,14 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
                 }}
                 draggable
                 onDragStart={(event) => handlePaletteDragStart(event, paletteNode.type)}
-                onTouchStart={(event) => handlePaletteTouchStart(event, paletteNode.type)}
+                onTouchStart={(event) =>
+                  handlePaletteTouchStart(
+                    event,
+                    paletteNode.type,
+                    paletteNode.label,
+                    categoryGroup.color,
+                  )
+                }
                 onTouchMove={handlePaletteTouchMove}
                 onTouchEnd={handlePaletteTouchEnd}
                 onTouchCancel={handlePaletteTouchCancel}
@@ -429,6 +481,16 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
         onDrop={handleGraphDrop}
         onDragOver={handleGraphDragOver}
       >
+        <button
+          type="button"
+          className="node-graph-delete-button"
+          aria-label="Delete selected nodes or edges"
+          disabled={selectedNodeIds.length === 0 && selectedEdgeIds.length === 0}
+          onClick={handleDeleteSelection}
+        >
+          <DeleteIcon fontSize="small" />
+        </button>
+
         <ReactFlow<AudioGraphNode, AudioGraphEdge>
           nodes={nodesWithHandlers}
           edges={edges}
@@ -439,6 +501,10 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
           onConnect={onConnect}
           onEdgesChange={onEdgesChange}
           onNodesChange={onNodesChange}
+          onSelectionChange={({ nodes: selectedNodes, edges: selectedEdges }) => {
+            setSelectedNodeIds(selectedNodes.map((node) => node.id));
+            setSelectedEdgeIds(selectedEdges.map((edge) => edge.id));
+          }}
           isValidConnection={isValidConnection}
           fitView
           nodesDraggable
@@ -455,6 +521,20 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
           <Background gap={20} size={1} color="#335066" />
         </ReactFlow>
       </div>
+
+      {touchDragPreview && (
+        <div
+          className="node-palette-touch-preview"
+          style={{
+            left: touchDragPreview.clientX,
+            top: touchDragPreview.clientY,
+            borderColor: touchDragPreview.nodeColor,
+            boxShadow: `0 10px 20px ${touchDragPreview.nodeColor}55`,
+          }}
+        >
+          {touchDragPreview.nodeLabel}
+        </div>
+      )}
     </div>
   );
 };
