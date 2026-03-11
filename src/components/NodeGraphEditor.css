@@ -91,6 +91,23 @@
   height: 100%;
 }
 
+.node-palette-touch-preview {
+  position: fixed;
+  z-index: 1000;
+  transform: translate(-50%, -135%);
+  pointer-events: none;
+  padding: 7px 10px;
+  border: 1px solid;
+  border-radius: 999px;
+  background: rgba(8, 20, 32, 0.92);
+  color: #e5f3ff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+}
+
 @media (max-width: 900px) {
   .node-graph-editor-shell {
     grid-template-columns: 1fr;
@@ -192,6 +209,12 @@
   background: transparent !important;
   border: none !important;
   padding: 0 !important;
+}
+
+.react-flow__node.selected > div {
+  outline: 2px solid #8ecbff;
+  outline-offset: 2px;
+  border-radius: 11px;
 }
 
 /* Custom styling for MiniMap to match dark theme */
