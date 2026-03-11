@@ -60,7 +60,7 @@ export const initialAudioGraphNodes: AudioGraphNode[] = [
     position: { x: 640, y: 120 },
     data: {
       title: 'Output',
-      subtitle: 'Mix bus to destination',
+      subtitle: 'Audio output device',
     },
   },
 ];

@@ -51,26 +51,33 @@ const paletteCategories = [
     category: 'Source',
     color: categoryColors.source,
     items: [
-      { type: 'oscillator', label: 'Oscillator', description: 'Sine source with frequency control' },
+      { type: 'oscillator', label: 'Oscillator', description: 'Wave source' },
     ],
   },
   {
     category: 'Mixing',
     color: categoryColors.mixing,
-    items: [{ type: 'gain', label: 'Gain', description: 'Volume stage and signal mixer' }],
+    items: [{ type: 'gain', label: 'Gain', description: 'Volume stage and mixer' }],
   },
   {
     category: 'DSP',
     color: categoryColors.dsp,
     items: [
-      { type: 'delay', label: 'Delay', description: 'Echo stage with time, feedback, and mix' },
-      { type: 'compressor', label: 'Dynamics Compressor', description: 'Threshold, knee, ratio, attack, and release' },
-      { type: 'limiter', label: 'Limiter', description: 'Peak control with fast compressor settings' },
+      { type: 'delay', label: 'Delay', description: 'Delay effect' },
+      { type: 'compressor', label: 'Dynamics Compressor', description: 'Basic compressor effect' },
+      { type: 'limiter', label: 'Limiter', description: 'Limiter to avoid clipping' },
     ],
   },
 ] as const;
 
 const AUDIO_NODE_DRAG_TYPE = 'application/x-audio-node-type';
+
+type TouchDragState = {
+  nodeType: AddableAudioGraphNodeKind;
+  touchId: number;
+  clientX: number;
+  clientY: number;
+};
 
 const isAddableNodeType = (value: string): value is AddableAudioGraphNodeKind =>
   value === 'oscillator' ||
@@ -242,6 +249,8 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
   const reactFlowInstanceRef = React.useRef<ReactFlowInstance<AudioGraphNode, AudioGraphEdge> | null>(
     null,
   );
+  const graphCanvasRef = React.useRef<HTMLDivElement | null>(null);
+  const touchDragStateRef = React.useRef<TouchDragState | null>(null);
 
   const handlePaletteDragStart = (
     event: React.DragEvent<HTMLButtonElement>,
@@ -270,6 +279,95 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
     });
 
     onAddNode(droppedType, graphPosition);
+  };
+
+  const addTouchNodeIfDroppedOnGraph = (
+    nodeType: AddableAudioGraphNodeKind,
+    clientX: number,
+    clientY: number,
+  ) => {
+    if (!reactFlowInstanceRef.current || !graphCanvasRef.current) {
+      return;
+    }
+
+    const graphBounds = graphCanvasRef.current.getBoundingClientRect();
+    const droppedOnGraph =
+      clientX >= graphBounds.left &&
+      clientX <= graphBounds.right &&
+      clientY >= graphBounds.top &&
+      clientY <= graphBounds.bottom;
+
+    if (!droppedOnGraph) {
+      return;
+    }
+
+    const graphPosition = reactFlowInstanceRef.current.screenToFlowPosition({
+      x: clientX,
+      y: clientY,
+    });
+
+    onAddNode(nodeType, graphPosition);
+  };
+
+  const handlePaletteTouchStart = (
+    event: React.TouchEvent<HTMLButtonElement>,
+    nodeType: AddableAudioGraphNodeKind,
+  ) => {
+    const touch = event.changedTouches[0];
+    if (!touch) {
+      return;
+    }
+
+    event.preventDefault();
+    touchDragStateRef.current = {
+      nodeType,
+      touchId: touch.identifier,
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+    };
+  };
+
+  const handlePaletteTouchMove = (event: React.TouchEvent<HTMLButtonElement>) => {
+    const state = touchDragStateRef.current;
+    if (!state) {
+      return;
+    }
+
+    const activeTouch = Array.from(event.touches).find((touch) => touch.identifier === state.touchId);
+    if (!activeTouch) {
+      return;
+    }
+
+    event.preventDefault();
+    touchDragStateRef.current = {
+      ...state,
+      clientX: activeTouch.clientX,
+      clientY: activeTouch.clientY,
+    };
+  };
+
+  const handlePaletteTouchEnd = (event: React.TouchEvent<HTMLButtonElement>) => {
+    const state = touchDragStateRef.current;
+    if (!state) {
+      return;
+    }
+
+    const endedTouch = Array.from(event.changedTouches).find(
+      (touch) => touch.identifier === state.touchId,
+    );
+
+    event.preventDefault();
+    if (endedTouch) {
+      addTouchNodeIfDroppedOnGraph(state.nodeType, endedTouch.clientX, endedTouch.clientY);
+    } else {
+      addTouchNodeIfDroppedOnGraph(state.nodeType, state.clientX, state.clientY);
+    }
+
+    touchDragStateRef.current = null;
+  };
+
+  const handlePaletteTouchCancel = () => {
+    touchDragStateRef.current = null;
   };
 
   const nodesWithHandlers = React.useMemo(
@@ -312,6 +410,10 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
                 }}
                 draggable
                 onDragStart={(event) => handlePaletteDragStart(event, paletteNode.type)}
+                onTouchStart={(event) => handlePaletteTouchStart(event, paletteNode.type)}
+                onTouchMove={handlePaletteTouchMove}
+                onTouchEnd={handlePaletteTouchEnd}
+                onTouchCancel={handlePaletteTouchCancel}
               >
                 <span className="node-palette-item-title">{paletteNode.label}</span>
                 <span className="node-palette-item-description">{paletteNode.description}</span>
@@ -323,6 +425,7 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
 
       <div
         className="node-graph-canvas"
+        ref={graphCanvasRef}
         onDrop={handleGraphDrop}
         onDragOver={handleGraphDragOver}
       >
