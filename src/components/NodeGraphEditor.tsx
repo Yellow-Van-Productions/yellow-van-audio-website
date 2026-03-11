@@ -13,6 +13,7 @@ import {
   type NodeProps,
   type NodeTypes,
 } from '@xyflow/react';
+import DeleteIcon from '@mui/icons-material/Delete';
 import type {
   AddableAudioGraphNodeKind,
   AudioGraphEdge,
@@ -258,6 +259,8 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
   const reactFlowInstanceRef = React.useRef<ReactFlowInstance<AudioGraphNode, AudioGraphEdge> | null>(
     null,
   );
+  const [selectedNodeIds, setSelectedNodeIds] = React.useState<string[]>([]);
+  const [selectedEdgeIds, setSelectedEdgeIds] = React.useState<string[]>([]);
   const graphCanvasRef = React.useRef<HTMLDivElement | null>(null);
   const touchDragStateRef = React.useRef<TouchDragState | null>(null);
   const [touchDragPreview, setTouchDragPreview] = React.useState<TouchDragPreview | null>(null);
@@ -401,6 +404,17 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
     clearTouchDrag();
   };
 
+  const handleDeleteSelection = () => {
+    if (!reactFlowInstanceRef.current || (selectedNodeIds.length === 0 && selectedEdgeIds.length === 0)) {
+      return;
+    }
+
+    void reactFlowInstanceRef.current.deleteElements({
+      nodes: selectedNodeIds.map((id) => ({ id })),
+      edges: selectedEdgeIds.map((id) => ({ id })),
+    });
+  };
+
   const nodesWithHandlers = React.useMemo(
     () =>
       nodes.map((node) => ({
@@ -467,6 +481,16 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
         onDrop={handleGraphDrop}
         onDragOver={handleGraphDragOver}
       >
+        <button
+          type="button"
+          className="node-graph-delete-button"
+          aria-label="Delete selected nodes or edges"
+          disabled={selectedNodeIds.length === 0 && selectedEdgeIds.length === 0}
+          onClick={handleDeleteSelection}
+        >
+          <DeleteIcon fontSize="small" />
+        </button>
+
         <ReactFlow<AudioGraphNode, AudioGraphEdge>
           nodes={nodesWithHandlers}
           edges={edges}
@@ -477,6 +501,10 @@ const NodeGraphEditor: React.FC<NodeGraphEditorProps> = ({
           onConnect={onConnect}
           onEdgesChange={onEdgesChange}
           onNodesChange={onNodesChange}
+          onSelectionChange={({ nodes: selectedNodes, edges: selectedEdges }) => {
+            setSelectedNodeIds(selectedNodes.map((node) => node.id));
+            setSelectedEdgeIds(selectedEdges.map((edge) => edge.id));
+          }}
           isValidConnection={isValidConnection}
           fitView
           nodesDraggable
