@@ -1,0 +1,266 @@
+.node-graph-editor-shell {
+  width: 100%;
+  height: 420px;
+  border-radius: 6px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  background: rgba(7, 16, 24, 0.7);
+}
+
+.node-palette {
+  border-right: 1px solid #274057;
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(10, 24, 37, 0.95) 0%, rgba(8, 18, 28, 0.95) 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.node-palette-title {
+  color: #e8f4ff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.node-palette-subtitle {
+  color: #8eb8d7;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.node-palette-category-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.node-palette-category-header {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid;
+  padding-bottom: 4px;
+}
+
+.node-palette-item {
+  border: 1px solid;
+  border-radius: 10px;
+  background: #0f2435;
+  padding: 10px;
+  text-align: left;
+  color: #def1ff;
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.node-palette-item:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 6px 16px rgba(8, 28, 44, 0.45);
+}
+
+.node-palette-item:active {
+  cursor: grabbing;
+  transform: scale(0.99);
+}
+
+.node-palette-item-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.node-palette-item-description {
+  font-size: 11px;
+  color: #a9cde6;
+  line-height: 1.25;
+}
+
+.node-graph-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 900px) {
+  .node-graph-editor-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(130px, 180px) minmax(0, 1fr);
+    height: 520px;
+  }
+
+  .node-palette {
+    border-right: none;
+    border-bottom: 1px solid #274057;
+    padding: 10px;
+    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    overflow-y: auto;
+  }
+
+  .node-palette-category-group {
+    gap: 6px;
+    margin-bottom: 0;
+  }
+
+  .node-palette-item {
+    border-radius: 8px;
+    padding: 8px;
+    gap: 2px;
+  }
+
+  .node-palette-item-title {
+    font-size: 12px;
+  }
+
+  .node-palette-item-description {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .node-palette-title,
+  .node-palette-subtitle {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .node-graph-editor-shell {
+    grid-template-rows: minmax(120px, 160px) minmax(0, 1fr);
+    height: 500px;
+  }
+
+  .node-palette {
+    padding: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .node-palette-title {
+    font-size: 12px;
+  }
+
+  .node-palette-subtitle {
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+
+  .node-palette-category-header {
+    font-size: 10px;
+    padding-bottom: 3px;
+  }
+
+  .node-palette-item {
+    padding: 7px;
+  }
+}
+
+/* Custom styling for React Flow controls to match dark theme */
+.react-flow__controls {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.react-flow__controls-button {
+  background: #0f1726 !important;
+  border-color: #2a4b63 !important;
+  color: #d7e9f8 !important;
+  transition: all 0.2s ease !important;
+}
+
+.react-flow__controls-button:hover {
+  background: #1a2a3f !important;
+  border-color: #3a5b7d !important;
+}
+
+.react-flow__controls-button svg {
+  fill: #d7e9f8 !important;
+}
+
+/* Remove default React Flow node backgrounds that cause visual artifacts */
+.react-flow__node {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Custom styling for MiniMap to match dark theme */
+.react-flow__minimap {
+  background: #0a1a28 !important;
+  border: 1px solid #2a4b63 !important;
+}
+
+.react-flow__minimap-mask {
+  fill: rgba(42, 75, 99, 0.4) !important;
+}
+
+.react-flow__minimap-node {
+  fill: #1a2a3f !important;
+  stroke: #2a4b63 !important;
+}
+
+/* Style React Flow attribution badge to match graph theme */
+.react-flow__attribution {
+  background: rgba(15, 23, 38, 0.9) !important;
+  border: 1px solid #2a4b63 !important;
+  border-radius: 6px !important;
+  right: 4px !important;
+  bottom: 4px !important;
+  color: #9fc2dc !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.28) !important;
+}
+
+.react-flow__attribution a {
+  color: #d7e9f8 !important;
+  text-decoration: none !important;
+}
+
+.react-flow__attribution a:hover {
+  color: #ffffff !important;
+  text-decoration: underline !important;
+}
+
+.node-parameter-list {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.node-parameter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.node-parameter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #b8d3e7;
+}
+
+.node-parameter-slider {
+  width: 100%;
+  accent-color: #73b7f2;
+}
+
+.node-parameter-select {
+  width: 100%;
+  background: #102536;
+  border: 1px solid #2e5979;
+  border-radius: 6px;
+  color: #d7e9f8;
+  font-size: 12px;
+  padding: 4px 6px;
+}

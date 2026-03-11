@@ -6,6 +6,7 @@ import theme from './theme';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Services, { ServiceItem } from './components/Services';
+import AudioPlayerComponent from './components/AudioPlayerComponent';
 import About from './components/About';
 import Footer from './components/Footer';
 
@@ -63,6 +64,8 @@ const App: React.FC = () => {
         />
         
         <Services services={services} />
+        
+        <AudioPlayerComponent />
         
         <About
           profileImageSrc="/images/ProfileImage.png"
